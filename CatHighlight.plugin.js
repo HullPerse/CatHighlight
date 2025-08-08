@@ -4,7 +4,6 @@
  * @version 1.0.0
  * @description Подсвечивает слова "кот" и "cat" в сообщениях Discord
  * @source https://github.com/hullperse/CatHighlight
- * @updateUrl https://raw.githubusercontent.com/hullperse/CatHighlight/CatHighlight.plugin.js
  */
 
 module.exports = class CatHighlight {
@@ -54,12 +53,30 @@ module.exports = class CatHighlight {
             this.processNode(node);
           }
         });
+
+        if (
+          mutation.type === "childList" &&
+          mutation.target.nodeType === Node.ELEMENT_NODE
+        ) {
+          this.processNode(mutation.target);
+        }
+
+        if (
+          mutation.type === "characterData" &&
+          mutation.target.nodeType === Node.TEXT_NODE
+        ) {
+          const parentElement = mutation.target.parentElement;
+          if (parentElement && this.isMessageNode(parentElement)) {
+            this.highlightMessage(parentElement);
+          }
+        }
       });
     });
 
     this.observer.observe(document.body, {
       childList: true,
       subtree: true,
+      characterData: true,
     });
   }
 
@@ -84,11 +101,16 @@ module.exports = class CatHighlight {
   }
 
   highlightMessage(messageNode) {
-    if (!messageNode || this.highlightedElements.has(messageNode)) {
+    if (!messageNode) {
       return;
     }
 
-    this.highlightedElements.add(messageNode);
+    this.removeHighlight(messageNode);
+
+    if (!this.highlightedElements.has(messageNode)) {
+      this.highlightedElements.add(messageNode);
+    }
+
     this.highlightTextInElement(messageNode);
   }
 
@@ -127,7 +149,7 @@ module.exports = class CatHighlight {
     const catRegex = /(кот|cat)/gi;
 
     return text.replace(catRegex, match => {
-      return `<span class="cat-highlight" style="background-color: transparent; color: red; padding: 1px 3px; border-radius: 3px; font-weight: bold;">${match}</span>`;
+      return `<span class="cat-highlight" style="background-color: transparent; color: red;  border-radius: 3px; font-weight: bold;">${match}</span>`;
     });
   }
 
