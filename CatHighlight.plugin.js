@@ -25,7 +25,7 @@ module.exports = class CatHighlight {
   }
 
   getDescription() {
-    return "Подсвечивает слова 'кот' и 'cat'";
+    return "Highlights the word cat in different languages";
   }
 
   start() {
@@ -146,7 +146,24 @@ module.exports = class CatHighlight {
   }
 
   highlightWords(text) {
-    const catRegex = /(кот|cat)/gi;
+    const words = [
+      "кот",
+      "cat",
+      "cats",
+      "kitten",
+      "kitty",
+      "кошка",
+      "киса",
+      "котэ",
+      "котенок",
+      "котик",
+      "feline",
+      "kitty",
+      "meow",
+      "кошак",
+      "neko",
+    ];
+    const catRegex = new RegExp(`(${words.join("|")})`, "gi");
 
     return text.replace(catRegex, match => {
       return `<span class="cat-highlight" style="background-color: transparent; color: red;  border-radius: 3px; font-weight: bold;">${match}</span>`;
