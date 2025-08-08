@@ -4,7 +4,6 @@
  * @version 1.0.0
  * @description Подсвечивает слова "кот" и "cat" в сообщениях Discord
  * @source https://github.com/hullperse/CatHighlight
- * @updateUrl https://raw.githubusercontent.com/hullperse/CatHighlight/CatHighlight.plugin.js
  */
 
 module.exports = class CatHighlight {
